@@ -1,0 +1,6 @@
+{
+  "name": "KLE COMMERCE",
+  "description": "KLE COMMERCE — A modern full-stack e-commerce storefront featuring 9 curated shopping categories, wishlist, shopping cart, test checkout, user profiles, and an admin management console.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
