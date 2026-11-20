@@ -30,7 +30,7 @@ export function Navbar() {
             K
           </span>
           <span className="font-display text-lg font-extrabold tracking-tight text-[#0B192C]">
-            tajcommers
+            kl commerce
           </span>
         </Link>
 

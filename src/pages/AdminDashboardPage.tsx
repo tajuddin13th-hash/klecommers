@@ -10,6 +10,7 @@ import {
   X,
 } from 'lucide-react';
 import React, { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { SmartImage } from '../components/SmartImage';
 import { useStore } from '../context/StoreContext';
 import { apiRequest } from '../lib/api';
@@ -661,6 +662,7 @@ export function AdminDashboardPage() {
                 <th className="py-3.5 px-4 text-right">Amount</th>
                 <th className="py-3.5 px-4">Payment</th>
                 <th className="py-3.5 px-4">Status</th>
+                <th className="py-3.5 px-4 text-right">Map</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -697,6 +699,14 @@ export function AdminDashboardPage() {
                         )
                       )}
                     </select>
+                  </td>
+                  <td className="py-3 px-4 text-right">
+                    <Link
+                      to={`/order-confirmation/${ord.id}#shipping-map`}
+                      className="text-xs font-semibold text-purple-700 hover:underline whitespace-nowrap"
+                    >
+                      View Map →
+                    </Link>
                   </td>
                 </tr>
               ))}

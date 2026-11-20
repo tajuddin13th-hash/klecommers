@@ -83,6 +83,71 @@ async function startServer() {
     res.json({ ok: true, service: 'KLE COMMERCE API' });
   });
 
+  // Google Maps runtime config & server-side Geocoding proxy (avoids client CORS trap)
+  app.get('/api/config/maps', (_req, res) => {
+    const apiKey =
+      process.env.VITE_GOOGLE_MAPS_API_KEY?.trim() ||
+      process.env.GOOGLE_MAPS_API_KEY?.trim() ||
+      '';
+    res.json({ apiKey });
+  });
+
+  app.get('/api/maps/geocode', async (req, res) => {
+    const address = String(req.query.address || '').trim();
+    if (!address) {
+      res.status(400).json({ error: 'Address query parameter is required' });
+      return;
+    }
+
+    const apiKey =
+      process.env.GOOGLE_MAPS_API_KEY?.trim() ||
+      process.env.VITE_GOOGLE_MAPS_API_KEY?.trim() ||
+      '';
+    if (!apiKey) {
+      res.status(503).json({ error: 'Google Maps API key not configured on server' });
+      return;
+    }
+
+    try {
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+        address
+      )}&key=${encodeURIComponent(apiKey)}`;
+      const geoRes = await fetch(url);
+      if (geoRes.status === 429) {
+        res.status(429).json({ error: 'Google Maps quota exceeded', status: 'RESOURCE_EXHAUSTED' });
+        return;
+      }
+      const data = (await geoRes.json()) as {
+        status?: string;
+        error_message?: string;
+        results?: Array<{
+          formatted_address?: string;
+          geometry?: { location?: { lat: number; lng: number } };
+        }>;
+      };
+
+      if (data.status === 'OVER_QUERY_LIMIT' || data.status === 'OVER_DAILY_LIMIT') {
+        res.status(429).json({
+          error: data.error_message || 'Google Maps quota exceeded',
+          status: 'RESOURCE_EXHAUSTED',
+        });
+        return;
+      }
+
+      if (data.status !== 'OK' || !data.results?.length || !data.results[0].geometry?.location) {
+        res.status(404).json({ error: 'Unable to locate address on map', status: data.status });
+        return;
+      }
+
+      res.json({
+        location: data.results[0].geometry.location,
+        formattedAddress: data.results[0].formatted_address || address,
+      });
+    } catch {
+      res.status(502).json({ error: 'Failed to reach Google Geocoding service' });
+    }
+  });
+
   // Categories
   app.get('/api/categories', async (_req, res) => {
     try {

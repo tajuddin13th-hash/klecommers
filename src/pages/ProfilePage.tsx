@@ -277,12 +277,12 @@ export function ProfilePage() {
                     ))}
                   </ul>
 
-                  <div className="pt-2 flex justify-end">
+                  <div className="pt-2 flex justify-end gap-4">
                     <Link
-                      to={`/order-confirmation/${order.id}`}
+                      to={`/order-confirmation/${order.id}#shipping-map`}
                       className="text-xs font-semibold text-purple-700 hover:underline"
                     >
-                      View Receipt →
+                      Track on Shipping Map →
                     </Link>
                   </div>
                 </article>

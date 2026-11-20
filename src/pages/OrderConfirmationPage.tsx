@@ -1,6 +1,7 @@
 import { ArrowRight, CheckCircle2, PackageCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
+import { OrderShippingMap } from '../components/OrderShippingMap';
 import { SmartImage } from '../components/SmartImage';
 import { apiRequest } from '../lib/api';
 import { formatPrice, type Order } from '../types';
@@ -44,7 +45,7 @@ export function OrderConfirmationPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
       <div className="rounded-3xl border border-slate-200 bg-white p-8 sm:p-10">
         <div className="flex items-center gap-3 text-emerald-700 mb-4">
           <CheckCircle2 className="w-8 h-8" />
@@ -156,6 +157,8 @@ export function OrderConfirmationPage() {
           </Link>
         </div>
       </div>
+
+      <OrderShippingMap order={order} />
     </div>
   );
 }

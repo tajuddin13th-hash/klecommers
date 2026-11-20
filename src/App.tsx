@@ -1,5 +1,5 @@
-import { CheckCircle2, Info, X, AlertCircle } from 'lucide-react';
-import { useEffect } from 'react';
+import { AlertCircle, CheckCircle2, Info, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { CartDrawer } from './components/CartDrawer';
 import { Footer } from './components/Footer';
@@ -57,11 +57,35 @@ function ToastBanner() {
 }
 
 export default function App() {
+  const [mapsQuotaExceeded, setMapsQuotaExceeded] = useState(false);
+
+  useEffect(() => {
+    const handleQuota = () => setMapsQuotaExceeded(true);
+    window.addEventListener('gmp-quota-exceeded', handleQuota);
+    return () => window.removeEventListener('gmp-quota-exceeded', handleQuota);
+  }, []);
+
   return (
     <BrowserRouter>
       <StoreProvider>
         <ScrollToTop />
         <div className="min-h-screen flex flex-col bg-white text-slate-900">
+          {mapsQuotaExceeded && (
+            <div className="bg-amber-50 border-b border-amber-200 text-amber-900 px-4 py-2.5 text-xs md:text-sm text-center sticky top-0 z-50 shadow-sm">
+              <span>
+                Google Maps Platform quota reached. If you are the app owner, visit{' '}
+                <a
+                  href="https://developers.google.com/maps/ai/ai-studio?utm_campaign=gmp_mcp_codeassist_v1_aistudio#quota_exceeded_errors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline font-semibold text-amber-950 hover:text-amber-800"
+                >
+                  maps developer site
+                </a>{' '}
+                for instructions to update your account.
+              </span>
+            </div>
+          )}
           <Navbar />
           <main className="flex-1">
             <Routes>
